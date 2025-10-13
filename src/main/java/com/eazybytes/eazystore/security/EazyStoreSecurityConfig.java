@@ -1,18 +1,19 @@
 package com.eazybytes.eazystore.security;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -49,6 +50,31 @@ public class EazyStoreSecurityConfig {
 //                .formLogin(withDefaults())
 //                .httpBasic(withDefaults()).build();
 //    }\
+
+    @Bean
+    public UserDetailsService userDetailsService(){
+        var user1 = User.builder().username("rutam")
+                .password("$2a$12$2zXXgsWspXoA5U7sBFEi1u/hictFQk2Bs5cujA7R716HC3xdZxhaS").roles("USER").build();
+        var user2 = User.builder().username("admin")
+                .password("$2a$12$5a/Vi.hF7eGTQlOZB7GaA.P5SZI6pGg6uRrjB22qb6nSA5fGNT8dq").roles("USER","ADMIN").build();
+
+        return new InMemoryUserDetailsManager(Arrays.asList(user1,user2));
+    }
+
+//    @Bean
+//    public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
+//        var user1 = User.builder().username("rutam")
+//                .password(passwordEncoder.encode("eazystore")).roles("USER").build();
+//        var user2 = User.builder().username("admin")
+//                .password("admin").roles("USER","ADMIN").build();
+//
+//        return new InMemoryUserDetailsManager(Arrays.asList(user1,user2));
+//    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource(){
