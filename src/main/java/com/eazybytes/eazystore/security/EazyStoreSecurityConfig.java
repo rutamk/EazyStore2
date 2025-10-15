@@ -8,11 +8,8 @@ import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -54,15 +51,15 @@ public class EazyStoreSecurityConfig {
 //                .httpBasic(withDefaults()).build();
 //    }\
 
-    @Bean
-    public UserDetailsService userDetailsService(){
-        var user1 = User.builder().username("rutam")
-                .password("$2a$12$2zXXgsWspXoA5U7sBFEi1u/hictFQk2Bs5cujA7R716HC3xdZxhaS").roles("USER").build();
-        var user2 = User.builder().username("admin")
-                .password("$2a$12$5a/Vi.hF7eGTQlOZB7GaA.P5SZI6pGg6uRrjB22qb6nSA5fGNT8dq").roles("USER","ADMIN").build();
-
-        return new InMemoryUserDetailsManager(Arrays.asList(user1,user2));
-    }
+//    @Bean
+//    public UserDetailsService userDetailsService(){
+//        var user1 = User.builder().username("rutam")
+//                .password("$2a$12$2zXXgsWspXoA5U7sBFEi1u/hictFQk2Bs5cujA7R716HC3xdZxhaS").roles("USER").build();
+//        var user2 = User.builder().username("admin")
+//                .password("$2a$12$5a/Vi.hF7eGTQlOZB7GaA.P5SZI6pGg6uRrjB22qb6nSA5fGNT8dq").roles("USER","ADMIN").build();
+//
+//        return new InMemoryUserDetailsManager(Arrays.asList(user1,user2));
+//    }
 
 //    @Bean
 //    public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
@@ -73,13 +70,24 @@ public class EazyStoreSecurityConfig {
 //
 //        return new InMemoryUserDetailsManager(Arrays.asList(user1,user2));
 //    }
+//
+
+    // Uses UserDetailsService for inmemory user creation and storage
+//    @Bean
+//    public AuthenticationManager authenticationManager(UserDetailsService userDetailsService
+//    ,PasswordEncoder passwordEncoder){
+//
+//        var daoAuthenticationProvider = new DaoAuthenticationProvider();
+//        daoAuthenticationProvider.setUserDetailsService(userDetailsService);
+//        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
+//        var providerManager = new ProviderManager(daoAuthenticationProvider);
+//        return providerManager;
+//    }
 
     @Bean
-    public AuthenticationManager authenticationManager(UserDetailsService userDetailsService
-    ,PasswordEncoder passwordEncoder){
-
+    public AuthenticationManager authenticationManager(
+            PasswordEncoder passwordEncoder){
         var daoAuthenticationProvider = new DaoAuthenticationProvider();
-        daoAuthenticationProvider.setUserDetailsService(userDetailsService);
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
         var providerManager = new ProviderManager(daoAuthenticationProvider);
         return providerManager;
