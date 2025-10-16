@@ -1,8 +1,7 @@
 ### Get all products
 GET http://localhost:8081/api/v1/products
 
-###
-GET http://localhost:8081/api/v1/dummy/search?name=madddn
-
 Authorization: Basic user:user
 ###
+###
+GET http://localhost:8081/api/v1/dummy/search?name=madddn
