@@ -1,9 +1,6 @@
 package com.eazybytes.eazystore.controller;
 
-import com.eazybytes.eazystore.dto.LoginRequestDto;
-import com.eazybytes.eazystore.dto.LoginResponseDto;
-import com.eazybytes.eazystore.dto.RegisterRequestDto;
-import com.eazybytes.eazystore.dto.UserDto;
+import com.eazybytes.eazystore.dto.*;
 import com.eazybytes.eazystore.entity.Customer;
 import com.eazybytes.eazystore.entity.Role;
 import com.eazybytes.eazystore.repository.CustomerRepository;
@@ -51,16 +48,21 @@ public class AuthController {
         try {
             Authentication authentication = authenticationManager.authenticate(new
                     UsernamePasswordAuthenticationToken(loginRequestDto.username(),
-                    loginRequestDto.password())
-            );
+                    loginRequestDto.password()));
             var userDto = new UserDto();
             var loggedInUser = (Customer) authentication.getPrincipal();
-            String jwtToken = jwtUtil.generateJwtToken(authentication);
             BeanUtils.copyProperties(loggedInUser, userDto);
             userDto.setRoles(authentication.getAuthorities().stream().map(
                     GrantedAuthority::getAuthority).collect(Collectors.joining(",")));
+            if (loggedInUser.getAddress() != null) {
+                AddressDto addressDto = new AddressDto();
+                BeanUtils.copyProperties(loggedInUser.getAddress(), addressDto);
+                userDto.setAddress(addressDto);
+            }
+            String jwtToken = jwtUtil.generateJwtToken(authentication);
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(new LoginResponseDto(HttpStatus.OK.getReasonPhrase(), userDto, jwtToken));
+                    .body(new LoginResponseDto(HttpStatus.OK.getReasonPhrase(),
+                            userDto, jwtToken));
         } catch (BadCredentialsException ex) {
             return buildErrorResponse(HttpStatus.UNAUTHORIZED,
                     "Invalid username or password");

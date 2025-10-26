@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS contacts
     name          VARCHAR(100)                          NOT NULL,
     email         VARCHAR(100)                          NOT NULL,
     mobile_number VARCHAR(15)                           NOT NULL,
+    status        VARCHAR(50)                           NOT NULL,
     message       VARCHAR(500)                          NOT NULL,
     created_at    TIMESTAMP   DEFAULT CURRENT_TIMESTAMP NOT NULL,
     created_by    VARCHAR(20)                           NOT NULL,
@@ -100,3 +101,8 @@ CREATE TABLE IF NOT EXISTS order_items
     FOREIGN KEY (order_id) REFERENCES orders(order_id),
     FOREIGN KEY (product_id) REFERENCES products(product_id)
 );
+
+ALTER TABLE orders MODIFY created_by VARCHAR(255);
+ALTER TABLE order_items MODIFY created_by VARCHAR(255);
+ALTER TABLE orders MODIFY updated_by VARCHAR(255);
+ALTER TABLE order_items MODIFY updated_by VARCHAR(255);

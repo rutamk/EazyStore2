@@ -43,6 +43,9 @@ public class EazyStoreSecurityConfig {
                 .authorizeHttpRequests((requests) -> {
                     publicPaths.forEach(path -> requests.requestMatchers(path).permitAll());
                     requests.requestMatchers("/api/v1/admin/**").hasRole("ADMIN");
+                    requests.requestMatchers("/eazystore/actuator/**").hasRole("OPS_ENG");
+                    requests.requestMatchers("/swagger-ui.html", "/swagger-ui/**",
+                            "/v3/api-docs/**").hasAnyRole("DEV_ENG","QA_ENG");
                     requests.anyRequest().hasAnyRole("USER","ADMIN");
                 })
                 .addFilterBefore(new JWTTokenValidatorFilter(publicPaths), BasicAuthenticationFilter.class)
