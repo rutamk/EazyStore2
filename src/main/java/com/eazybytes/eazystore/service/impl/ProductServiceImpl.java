@@ -6,6 +6,7 @@ import com.eazybytes.eazystore.repository.ProductRepository;
 import com.eazybytes.eazystore.service.IProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +18,7 @@ public class ProductServiceImpl implements IProductService {
 
     private final ProductRepository productRepository;
 
+    @Cacheable("products")
     @Override
     public List<ProductDto> getProducts() {
         return productRepository.findAll()

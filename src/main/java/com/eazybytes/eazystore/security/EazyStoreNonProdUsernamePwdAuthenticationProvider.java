@@ -6,7 +6,6 @@ import com.eazybytes.eazystore.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -18,10 +17,10 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Set;
 
-@Profile("prod")
+@Profile("!prod")
 @Component
 @RequiredArgsConstructor
-public class EazyStoreUsernamePwdAuthenticationProvider implements AuthenticationProvider {
+public class EazyStoreNonProdUsernamePwdAuthenticationProvider implements AuthenticationProvider {
 
     private final CustomerRepository customerRepository;
     private final PasswordEncoder passwordEncoder;
@@ -38,11 +37,9 @@ public class EazyStoreUsernamePwdAuthenticationProvider implements Authenticatio
         List<SimpleGrantedAuthority> authorities = roles.stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName()))
                 .toList();
-        if(passwordEncoder.matches(pwd, customer.getPasswordHash())){
-            return new UsernamePasswordAuthenticationToken(customer,null, authorities);
-        } else {
-            throw new BadCredentialsException("Invalid password");
-        }
+
+        return new UsernamePasswordAuthenticationToken(customer,
+                null, authorities);
     }
 
     @Override

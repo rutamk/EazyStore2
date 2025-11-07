@@ -61,16 +61,16 @@ ALTER TABLE address MODIFY COLUMN created_by VARCHAR(100);
 ALTER TABLE address MODIFY COLUMN updated_by VARCHAR(100);
 
 
-CREATE TABLE IF NOT EXISTS roles (
-                                     role_id     BIGINT AUTO_INCREMENT PRIMARY KEY,
-                                     customer_id BIGINT NOT NULL,
-                                     name        VARCHAR(50) NOT NULL,
-                                     created_at TIMESTAMP   DEFAULT CURRENT_TIMESTAMP NOT NULL,
-                                     created_by VARCHAR(20) NOT NULL,
-                                     updated_at TIMESTAMP   DEFAULT NULL,
-                                     updated_by VARCHAR(20) DEFAULT NULL,
-                                     FOREIGN KEY (customer_id) REFERENCES customers(customer_id) ON DELETE CASCADE
-);
+# CREATE TABLE IF NOT EXISTS roles (
+#                                      role_id     BIGINT AUTO_INCREMENT PRIMARY KEY,
+#                                      customer_id BIGINT NOT NULL,
+#                                      name        VARCHAR(50) NOT NULL,
+#                                      created_at TIMESTAMP   DEFAULT CURRENT_TIMESTAMP NOT NULL,
+#                                      created_by VARCHAR(20) NOT NULL,
+#                                      updated_at TIMESTAMP   DEFAULT NULL,
+#                                      updated_by VARCHAR(20) DEFAULT NULL,
+#                                      FOREIGN KEY (customer_id) REFERENCES customers(customer_id) ON DELETE CASCADE
+# );
 
 CREATE TABLE IF NOT EXISTS orders
 (
@@ -106,3 +106,33 @@ ALTER TABLE orders MODIFY created_by VARCHAR(255);
 ALTER TABLE order_items MODIFY created_by VARCHAR(255);
 ALTER TABLE orders MODIFY updated_by VARCHAR(255);
 ALTER TABLE order_items MODIFY updated_by VARCHAR(255);
+
+CREATE TABLE IF NOT EXISTS roles (
+                                     role_id     BIGINT AUTO_INCREMENT PRIMARY KEY,
+                                     name        VARCHAR(50) NOT NULL,
+                                     created_at TIMESTAMP   DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                                     created_by VARCHAR(20) NOT NULL,
+                                     updated_at TIMESTAMP   DEFAULT NULL,
+                                     updated_by VARCHAR(20) DEFAULT NULL,
+                                     UNIQUE KEY unique_key (name)
+);
+
+CREATE TABLE IF NOT EXISTS customer_roles (
+                                              customer_id BIGINT NOT NULL,
+                                              role_id     BIGINT NOT NULL,
+                                              PRIMARY KEY (customer_id, role_id),
+                                              FOREIGN KEY (customer_id) REFERENCES customers(customer_id) ON DELETE CASCADE,
+                                              FOREIGN KEY (role_id) REFERENCES roles(role_id) ON DELETE CASCADE
+);
+
+INSERT INTO roles (name, created_at, created_by)
+VALUES ('ROLE_USER', CURRENT_TIMESTAMP, 'DBA');
+
+INSERT INTO roles (name, created_at, created_by)
+VALUES ('ROLE_ADMIN', CURRENT_TIMESTAMP, 'DBA');
+
+INSERT INTO roles (name, created_at, created_by)
+VALUES ('ROLE_OPS_ENG', CURRENT_TIMESTAMP, 'DBA');
+
+INSERT INTO roles (name, created_at, created_by)
+VALUES ('ROLE_QA_ENG', CURRENT_TIMESTAMP, 'DBA');

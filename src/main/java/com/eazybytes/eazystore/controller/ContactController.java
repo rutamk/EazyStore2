@@ -1,15 +1,13 @@
 package com.eazybytes.eazystore.controller;
 
+import com.eazybytes.eazystore.dto.ContactInfoDto;
 import com.eazybytes.eazystore.dto.ContactRequestDto;
 import com.eazybytes.eazystore.service.IContactService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/v1/contacts")
@@ -17,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ContactController {
 
     private final IContactService iContactService;
+    private final ContactInfoDto contactInfoDto;
 
     @PostMapping
     public ResponseEntity<String> saveContact(
@@ -24,6 +23,11 @@ public class ContactController {
         iContactService.saveContact(contactRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body("Request processed successfully");
+    }
+
+    @GetMapping
+    public ResponseEntity<ContactInfoDto> getContactInfo(){
+        return ResponseEntity.ok(contactInfoDto);
     }
 
 }
